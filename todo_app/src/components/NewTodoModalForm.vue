@@ -162,6 +162,7 @@
                 data: this.form,
                 todoId: this.todoItem.pk,
               })
+              this.$parent.filterByDate = 'all';
               break;
           }
 
