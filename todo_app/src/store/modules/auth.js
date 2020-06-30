@@ -10,6 +10,9 @@ export default {
     },
 
     signUp(ctx, data) {
+      const email = data.email;
+      const password = data.password;
+
       fetch('/api/auth/users/' ,{
         method: 'POST',
         body: JSON.stringify(data),
@@ -17,13 +20,13 @@ export default {
           'Content-type': 'application/json',
         }
       })
-      .then(response => response.json())
-      .then(user => {
-        ctx.dispatch('signIn', {
-          email: data.email,
-          password: data.password,
+      .then(response => {
+        if (response.status === 201) {
+          ctx.dispatch('signIn', {
+          email: email,
+          password: password,
         });
-        ctx.commit('updateUser', user);
+        }
       })
       .catch(error => {
         ctx.commit('updateAuthErrorMessage', error.message);
@@ -43,7 +46,10 @@ export default {
         .then(tokenObj => {
           const token = tokenObj['auth_token'];
           ctx.commit('updateToken', token);
-          localStorage.setItem('token', token);
+          localStorage.setItem('token', `Token ${token}`);
+
+          ctx.dispatch('getUser');
+          ctx.dispatch('fetchTodoList');
         })
         .catch(error => {
           ctx.commit('updateAuthErrorMessage', error.message);
@@ -51,13 +57,30 @@ export default {
         });
     },
 
+    getUser(ctx) {
+      fetch('/api/auth/users/me/', {
+        headers: {
+          'Content-type': 'application/json',
+          'Authorization': localStorage.getItem('token'),
+        },
+      })
+        .then(response => response.json())
+        .then(user => {
+          ctx.commit('updateUser', user);
+          ctx.commit('updateAuthErrorStatus', false);
+        })
+        .catch(error => {
+          ctx.commit('updateAuthErrorMessage', error.message);
+          ctx.commit('updateAuthErrorStatus', true);
+        })
+    },
+
     signOut(ctx) {
-      // fetch('http://httpstat.us/500') // тест на ошибку
       fetch('/api/auth/token/logout/', {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',
-          'Authorization': `Token ${localStorage.getItem('token')}`,
+          'Authorization': localStorage.getItem('token'),
         },
       })
         .then(response => {
@@ -65,6 +88,8 @@ export default {
             localStorage.removeItem('token');
             ctx.commit('updateToken', '');
             ctx.commit('updateUser', {});
+            ctx.commit('updateTodoList', []);
+            ctx.commit('updateFilteredTodoList', []);
           }
           ctx.commit('updateAuthErrorStatus', false);
         })
