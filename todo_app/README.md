@@ -1,7 +1,7 @@
-TODO SPA Frontend
-=======
+TODO SPA frontend
+======= 
 
-TODO SPA frontend using Vue.js.
+TODO SPA frontend using vue.js.
 
 ## Project setup
 ```
