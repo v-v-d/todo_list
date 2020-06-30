@@ -120,18 +120,20 @@ export default {
     deleteTodoFromTodoList(state, todoItem) {
       const currentIdx = state.todoList.indexOf(todoItem);
       state.todoList.splice(currentIdx, 1);
+      state.filteredTodoList = state.todoList;
     },
 
-    updateTodoInTodoList(state, todoItem) {
-      todoItem.date = new Date(todoItem.date).toLocaleString();
+    updateTodoInTodoList(state, todoObj) {
       const currentIdx = state.todoList.findIndex(
-        todoItem => todoItem.id === todoItem.id
+        todoItem => todoItem.pk === todoObj.pk
       );
-      state.todoList[currentIdx] = todoItem;
+      state.todoList[currentIdx] = todoObj;
+      state.filteredTodoList = state.todoList;
     },
 
     addNewTodoInTodoList(state, todoItem) {
       state.todoList.unshift(todoItem);
+      state.filteredTodoList = state.todoList;
     },
 
     updateTodoErrorStatus(state, errorStatus) {
