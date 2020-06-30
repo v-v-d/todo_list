@@ -38,10 +38,15 @@ export default {
         }
       })
         .then(response => {
-          if (response.status === 401) {
-            localStorage.removeItem('token');
+          switch (response.status) {
+            case 401:
+              localStorage.removeItem('token');
+              throw new Error('unauthorized');
+            case 200:
+              return response.json();
+            default:
+              throw new Error(`${response.status}`);
           }
-          return response.json();
         })
         .then(todoList => {
           ctx.commit('updateTodoList', todoList);

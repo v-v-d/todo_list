@@ -5,12 +5,7 @@
     <b-row>
       <!-- 'Add new' button -->
       <b-col>
-        <b-button
-            @click="setModalSettings('Create new todo', 'Create')"
-            variant="success"
-            v-b-modal.modal-new-todo
-            size="sm"
-        >
+        <b-button @click="addNewTodoBtnHandler" variant="success" size="sm">
           Add new
         </b-button>
       </b-col>
@@ -137,7 +132,7 @@
     },
     computed: mapGetters([
       'todoList', 'isTodoList', 'filteredTodoList',
-      'todoListErrorStatus', 'todoListErrorMsg'
+      'todoListErrorStatus', 'todoListErrorMsg', 'isToken'
     ]),
     mounted() {
       this.fetchTodoList();
@@ -153,6 +148,12 @@
           'Update todo', 'Update', todoItem
         )
         this.$bvModal.show('modal-new-todo');
+      },
+
+      setModalSettings(title, btnName, todoItem = null) {
+        this.modalTitle = title;
+        this.modalBtnName = btnName;
+        this.updatedTodoItem = todoItem;
       },
 
       onDelete(todoItem) {
@@ -174,10 +175,13 @@
           })
       },
 
-      setModalSettings(title, btnName, todoItem = null) {
-        this.modalTitle = title;
-        this.modalBtnName = btnName;
-        this.updatedTodoItem = todoItem;
+      addNewTodoBtnHandler() {
+        if (this.isToken) {
+          this.setModalSettings('Create new todo', 'Create');
+          this.$bvModal.show('modal-new-todo');
+        } else {
+          this.$bvModal.show('modal-sign-in');
+        }
       },
 
       dateFiltering() {
