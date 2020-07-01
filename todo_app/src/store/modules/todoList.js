@@ -86,7 +86,7 @@ export default {
 
     deleteTodo(ctx, todoItem) {
       // fetch('http://httpstat.us/500') // test for 500 status
-      fetch(`/api/todo/${todoItem.pk}/`, {
+      fetch(`/api/todo/${todoItem.id}/`, {
         method: 'DELETE',
         headers: {
           'Content-type': 'application/json',
@@ -130,7 +130,7 @@ export default {
 
     updateTodoInTodoList(state, todoObj) {
       const currentIdx = state.todoList.findIndex(
-        todoItem => todoItem.pk === todoObj.pk
+        todoItem => todoItem.id === todoObj.id
       );
       state.todoList[currentIdx] = todoObj;
       state.filteredTodoList = state.todoList;

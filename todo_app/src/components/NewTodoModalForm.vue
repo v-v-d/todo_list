@@ -106,7 +106,7 @@
 </template>
 
 <script>
-  import {mapActions} from 'vuex';
+  import { mapGetters, mapActions } from 'vuex';
   import {validationMixin} from "vuelidate";
   import {maxLength, required} from "vuelidate/lib/validators";
 
@@ -141,6 +141,7 @@
         },
       },
     },
+    computed: mapGetters(['user']),
     methods: {
       ...mapActions(['createTodo', 'updateTodo']),
 
@@ -160,7 +161,7 @@
             case 'Update':
               this.updateTodo({
                 data: this.form,
-                todoId: this.todoItem.pk,
+                todoId: this.todoItem.id,
               })
               this.$parent.filterByDate = 'all';
               break;
@@ -179,6 +180,7 @@
       getValidForm() {
         let validForm = Object.assign({}, this.form);
         validForm.date = new Date(`${this.form.date} ${this.form.time}`);
+        validForm.user = this.user.id;
         delete validForm.time;
 
         return validForm
