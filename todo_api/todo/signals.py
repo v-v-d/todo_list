@@ -15,5 +15,5 @@ def start_send_reminder_email_task(sender, instance, **kwargs):
     todo_item = model_to_dict(instance)
 
     send_reminder_email_task.apply_async(
-        email=user_email, todo=todo_item, eta=reminder_date
+        args=[user_email, todo_item], eta=reminder_date
     )

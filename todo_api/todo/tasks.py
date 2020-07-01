@@ -6,5 +6,6 @@ from todo.services import send_reminder_email
 
 
 @shared_task
-def send_reminder_email_task(**kwargs):
-    send_reminder_email(kwargs.get('email'), kwargs.get('todo'))
+def send_reminder_email_task(*args):
+    email, todo, *_ = args
+    send_reminder_email(email, todo)
