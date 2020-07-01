@@ -45,9 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'todo.apps.TodoConfig',
+    'authapp.apps.AuthappConfig',
 
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -98,6 +101,20 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+            'rest_framework.permissions.IsAuthenticated',
+        ],
+}
+
+AUTH_USER_MODEL = 'authapp.TodoUser'
+
+DJOSER = {
+    'LOGIN_FILED': 'email',
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'SERIALIZERS': {
+        'user_create': 'authapp.serializers.TodoUserCreateSerializer',
+        'user': 'authapp.serializers.TodoUserCreateSerializer',
+    }
 }
 
 # Password validation
@@ -139,3 +156,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+# SMTP settings for sending emails to users
+DOMAIN_NAME = config.get('smtp', 'DOMAIN_NAME')
+EMAIL_HOST = config.get('smtp', 'EMAIL_HOST')
+EMAIL_PORT = config.get('smtp', 'EMAIL_PORT')
+EMAIL_HOST_USER = config.get('smtp', 'EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config.get('smtp', 'EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = config.get('smtp', 'EMAIL_USE_SSL')

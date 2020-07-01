@@ -8,7 +8,13 @@ class TodoList(generics.ListCreateAPIView):
     queryset = Todo.objects.all()
     serializer_class = TodoSerializer
 
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user.pk)
+
 
 class TodoDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Todo.objects.all()
     serializer_class = TodoSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user.pk)
