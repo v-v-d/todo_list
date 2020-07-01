@@ -108,6 +108,8 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'authapp.TodoUser'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 DJOSER = {
     'LOGIN_FILED': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
@@ -163,7 +165,7 @@ EMAIL_HOST = config.get('smtp', 'EMAIL_HOST')
 EMAIL_PORT = config.get('smtp', 'EMAIL_PORT')
 EMAIL_HOST_USER = config.get('smtp', 'EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config.get('smtp', 'EMAIL_HOST_PASSWORD')
-EMAIL_USE_SSL = config.get('smtp', 'EMAIL_USE_SSL')
+EMAIL_USE_TLS = config.get('smtp', 'EMAIL_USE_TLS')
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = '6379'
