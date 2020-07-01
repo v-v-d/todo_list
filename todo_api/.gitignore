@@ -2,6 +2,5 @@
 venv
 conf/
 __pycache__
-migrations
 *.pyc
 *.sqlite3

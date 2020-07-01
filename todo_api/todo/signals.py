@@ -8,8 +8,10 @@ from todo.tasks import send_reminder_email_task
 
 @receiver(post_save, sender=Todo)
 def start_send_reminder_email_task(sender, instance, **kwargs):
-    todo_date = sender.get_item(instance.date)
-    reminder_date = todo_date - timezone.timedelta(hours=1)
-    user_email = sender.get_item(instance.user.email)
+    todo_date = instance.date
+    reminder_date = todo_date - timezone.timedelta(minutes=1)
+    user_email = instance.user.email
 
-    send_reminder_email_task(user_email, instance).apply_async(eta=reminder_date)
+    send_reminder_email_task.apply_async(
+        email=user_email, todo=instance, eta=reminder_date
+    )
