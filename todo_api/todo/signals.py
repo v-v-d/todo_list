@@ -1,3 +1,4 @@
+from celery.worker.control import revoke
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
@@ -14,6 +15,12 @@ def start_send_reminder_email_task(sender, instance, **kwargs):
     user_email = instance.user.email
     todo_item = model_to_dict(instance)
 
-    send_reminder_email_task.apply_async(
+    if instance.task_id:
+        revoke(instance.task_id, terminate=True, signal='SIGKILL')
+
+    task_id = send_reminder_email_task.apply_async(
         args=[user_email, todo_item], eta=reminder_date
     )
+
+    instance.task_id = task_id
+    # instance.save()
