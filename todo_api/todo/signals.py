@@ -19,10 +19,12 @@ def start_send_reminder_email_task(sender, instance, **kwargs):
     if current_todo_item:
         current_date = current_todo_item.date
 
-        if current_date != todo_date:
-            current_app.control.revoke(
-                task_id=instance.task_id, terminate=True, signal='SIGKILL'
-            )
+        if current_date == todo_date:
+            return
+
+        current_app.control.revoke(
+            task_id=instance.task_id, terminate=True, signal='SIGKILL'
+        )
 
     task_id = send_reminder_email_task.apply_async(
         args=[user_email, todo_item], eta=reminder_date
