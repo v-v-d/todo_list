@@ -122,6 +122,7 @@
           date: '',
           time: '',
         },
+        timezone: '',
       }
     },
     validations: {
@@ -140,6 +141,9 @@
           required,
         },
       },
+    },
+    mounted() {
+      this.getCurrentTimeZone()
     },
     computed: mapGetters(['user']),
     methods: {
@@ -160,7 +164,7 @@
               break;
             case 'Update':
               this.updateTodo({
-                data: this.form,
+                data: this.getValidForm(),
                 todoId: this.todoItem.id,
               })
               this.$parent.filterByDate = 'all';
@@ -181,9 +185,10 @@
         let validForm = Object.assign({}, this.form);
         validForm.date = new Date(`${this.form.date} ${this.form.time}`);
         validForm.user = this.user.id;
+        validForm.timezone = this.timezone;
         delete validForm.time;
 
-        return validForm
+        return validForm;
       },
 
       resetFormValues() {
@@ -207,9 +212,14 @@
         if (this.todoItem) {
           this.form.name = this.todoItem.name;
           this.form.text = this.todoItem.text;
-          this.form.date = this.todoItem.date;
+          this.form.date = new Date(this.todoItem.date).toISOString().split('T')[0];
           this.form.time = new Date(this.todoItem.date).toLocaleTimeString();
         }
+      },
+
+      getCurrentTimeZone() {
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        timezone ? this.timezone = timezone : this.timezone = 'Europe/Moscow';
       },
     },
   }
