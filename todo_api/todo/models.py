@@ -8,6 +8,7 @@ class Todo(models.Model):
     text = models.CharField('todo text', max_length=512, blank=True)
     date = models.DateTimeField('todo date')
     timezone = models.CharField('todo timezone', max_length=128, blank=False)
+    task_id = models.CharField('celery task id', max_length=512, blank=True)
     user = models.ForeignKey(TodoUser, related_name='todo_user', on_delete=models.CASCADE)
 
     def __str__(self):
